@@ -2,9 +2,13 @@ package main
 
 import (
 	"Annuaire/annuaire"
-	"Annuaire/export"
+	exportation "Annuaire/exportation"
+	importation "Annuaire/importation"
 	"flag"
 	"fmt"
+	"html/template"
+	"log"
+	"net/http"
 )
 
 func main() {
@@ -15,7 +19,6 @@ func main() {
 	flag.StringVar(&name, "name", "", "Name of the person to add")
 	flag.StringVar(&surname, "surname", "", "Surname of the person to add")
 	flag.StringVar(&tel, "tel", "", "Tel number of the person to add")
-	flag.StringVar(&action, "export", "", "Export the annuaire to a file (e.g., export.json)")
 	flag.Parse()
 
 	switch action {
@@ -30,18 +33,29 @@ func main() {
 		annuaire.SearchPerson(name)
 	case "update":
 		annuaire.UpdatePerson(name, surname, tel)
-	// ...existing code...
 	case "export":
-		var contacts []export.Person
+		var contacts []exportation.Person
 		for person := range annuaire.Annuaire {
-			contacts = append(contacts, export.Person{
+			contacts = append(contacts, exportation.Person{
 				Name:    person.Name,
 				Surname: person.Surname,
 				Tel:     person.Tel,
 			})
 		}
-		export.ExportAnnuaireJSON("export.json", contacts)
-		// ...existing code...
+		exportation.ExportAnnuaireJSON("annuaire.json", contacts)
+	case "import":
+		importation.ImportAnnuaireJSON("annuaire.json")
+	case "serve":
+		tmpl := template.Must(template.ParseFiles("index.html"))
+		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+			var persons []annuaire.Person
+			for person := range annuaire.Annuaire {
+				persons = append(persons, person)
+			}
+			tmpl.Execute(w, persons)
+		})
+		log.Println("Serveur démarré sur http://localhost:8080")
+		log.Fatal(http.ListenAndServe(":8080", nil))
 	default:
 		fmt.Printf("Unknown action: %s\n", action)
 		return

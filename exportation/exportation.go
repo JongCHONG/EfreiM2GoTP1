@@ -1,4 +1,4 @@
-package export
+package exportation
 
 import (
 	"encoding/json"
