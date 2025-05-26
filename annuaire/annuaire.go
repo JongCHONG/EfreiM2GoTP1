@@ -3,73 +3,73 @@ package annuaire
 import "fmt"
 
 type Person struct {
-	name    string
-	surname string
-	tel     string
+	Name    string
+	Surname string
+	Tel     string
 }
 
 var Annuaire = map[Person]string{
-	{name: "John", surname: "Doe", tel: "123-456-7890"}: "",
+	{Name: "John", Surname: "Doe", Tel: "123-456-7890"}: "",
 }
 
 func PrintAnnuaire() {
 	for person := range Annuaire {
-		fmt.Printf("Name: %s Surname: %s, Tel: %s\n", person.name, person.surname, person.tel)
+		fmt.Printf("Name: %s Surname: %s, Tel: %s\n", person.Name, person.Surname, person.Tel)
 	}
 }
 
-func AddPerson(name, surname, tel string) {
-	person := Person{name: name, surname: surname, tel: tel}
+func AddPerson(Name, Surname, Tel string) {
+	person := Person{Name: Name, Surname: Surname, Tel: Tel}
 	if _, exists := Annuaire[person]; exists {
-		fmt.Printf("Person %s %s already exists in the annuaire.\n", name, surname)
+		fmt.Printf("Person %s %s already exists in the annuaire.\n", Name, Surname)
 		return
 	}
 	Annuaire[person] = ""
-	fmt.Printf("Added person: %s %s, Tel: %s\n", name, surname, tel)
+	fmt.Printf("Added person: %s %s, Tel: %s\n", Name, Surname, Tel)
 }
 
-func RemovePerson(name, surname string) {
+func RemovePerson(Name, Surname string) {
 	found := false
 	for person := range Annuaire {
-		if person.name == name && person.surname == surname {
+		if person.Name == Name && person.Surname == Surname {
 			delete(Annuaire, person)
-			fmt.Printf("Removed person: %s %s\n", name, surname)
+			fmt.Printf("Removed person: %s %s\n", Name, Surname)
 			found = true
 			break
 		}
 	}
 	if !found {
-		fmt.Printf("Person %s %s not found in the annuaire.\n", name, surname)
+		fmt.Printf("Person %s %s not found in the annuaire.\n", Name, Surname)
 	}
 }
 
-func SearchPerson(name string) {
+func SearchPerson(Name string) {
 	found := false
 	for person := range Annuaire {
-		if person.name == name {
-			fmt.Printf("Found person: %s %s, Tel: %s\n", person.name, person.surname, person.tel)
+		if person.Name == Name {
+			fmt.Printf("Found person: %s %s, Tel: %s\n", person.Name, person.Surname, person.Tel)
 			found = true
 			break
 		}
 	}
 	if !found {
-		fmt.Printf("Person with name %s not found in the annuaire.\n", name)
+		fmt.Printf("Person with Name %s not found in the annuaire.\n", Name)
 	}
 }
 
-func UpdatePerson(name, surname, tel string) {
+func UpdatePerson(Name, Surname, Tel string) {
 	found := false
 	for person := range Annuaire {
-		if person.name == name && person.surname == surname {
+		if person.Name == Name && person.Surname == Surname {
 			delete(Annuaire, person)
-			newPerson := Person{name: name, surname: surname, tel: tel}
+			newPerson := Person{Name: Name, Surname: Surname, Tel: Tel}
 			Annuaire[newPerson] = ""
-			fmt.Printf("Updated person: %s %s, New Tel: %s\n", name, surname, tel)
+			fmt.Printf("Updated person: %s %s, New Tel: %s\n", Name, Surname, Tel)
 			found = true
 			break
 		}
 	}
 	if !found {
-		fmt.Printf("Person %s %s not found in the annuaire.\n", name, surname)
+		fmt.Printf("Person %s %s not found in the annuaire.\n", Name, Surname)
 	}
 }

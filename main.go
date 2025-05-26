@@ -2,6 +2,7 @@ package main
 
 import (
 	"Annuaire/annuaire"
+	"Annuaire/export"
 	"flag"
 	"fmt"
 )
@@ -14,6 +15,7 @@ func main() {
 	flag.StringVar(&name, "name", "", "Name of the person to add")
 	flag.StringVar(&surname, "surname", "", "Surname of the person to add")
 	flag.StringVar(&tel, "tel", "", "Tel number of the person to add")
+	flag.StringVar(&action, "export", "", "Export the annuaire to a file (e.g., export.json)")
 	flag.Parse()
 
 	switch action {
@@ -28,6 +30,18 @@ func main() {
 		annuaire.SearchPerson(name)
 	case "update":
 		annuaire.UpdatePerson(name, surname, tel)
+	// ...existing code...
+	case "export":
+		var contacts []export.Person
+		for person := range annuaire.Annuaire {
+			contacts = append(contacts, export.Person{
+				Name:    person.Name,
+				Surname: person.Surname,
+				Tel:     person.Tel,
+			})
+		}
+		export.ExportAnnuaireJSON("export.json", contacts)
+		// ...existing code...
 	default:
 		fmt.Printf("Unknown action: %s\n", action)
 		return
